@@ -227,5 +227,18 @@ Accessing AX data is very similar to the Simple Registration process, described 
 This would provide the sreg data for :email, and the AX data for 'http://schema.openid.net/birthDate'
 
 
+OAuth OpenID Extension
+======================
+
+Some OpenID providers combine an OpenID authentication request with the approval of the OAuth request token. See more:  http://step2.googlecode.com/svn/spec/openid_oauth_extension/latest/openid_oauth_extension.html
+
+Obtaining OAuth request token is very similar to the Simple Registration process -- just added the OAuth parameters. For example:
+        authenticate_with_open_id(identity_url,
+            :consumer => "www.example.com",
+            :scope => ["http://docs.google.com/feeds/", 
+                       "http://spreadsheets.google.com/feeds/"].join(' ') ) do |result, identity_url, registration|
+                      
+This would provide the request token and the scope. (in the above example, registration['request_token'] and registration['scope'])
+
 
 Copyright (c) 2007 David Heinemeier Hansson, released under the MIT license
