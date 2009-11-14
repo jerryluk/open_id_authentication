@@ -230,6 +230,8 @@ This would provide the sreg data for :email, and the AX data for 'http://schema.
 OAuth OpenID Extension
 ======================
 
+To use OAuth OpenID extension, please use ruby-openid version 2.1.8 or higher
+
 Some OpenID providers combine an OpenID authentication request with the approval of the OAuth request token. See more:  http://step2.googlecode.com/svn/spec/openid_oauth_extension/latest/openid_oauth_extension.html
 
 Obtaining OAuth request token is very similar to the Simple Registration process -- just added the OAuth parameters. For example:
