@@ -1,6 +1,7 @@
 require 'uri'
 require 'openid/extensions/sreg'
 require 'openid/extensions/ax'
+require 'openid/extensions/oauth'
 require 'openid/store/filesystem'
 
 require File.dirname(__FILE__) + '/open_id_authentication/association'
@@ -142,6 +143,7 @@ module OpenIdAuthentication
       open_id_request = open_id_consumer.begin(identity_url)
       add_simple_registration_fields(open_id_request, options)
       add_ax_fields(open_id_request, options)
+      add_oauth_fields(open_id_request, options)
       redirect_to(open_id_redirect_url(open_id_request, return_to, method))
     rescue OpenIdAuthentication::InvalidOpenId => e
       yield Result[:invalid], identity_url, nil
@@ -166,6 +168,8 @@ module OpenIdAuthentication
             profile_data.merge! data_response.from_success_response( open_id_response ).data
           end
         end
+        
+        profile_data.merge! OpenID::OAuth::Response.from_success_response(open_id_response).get_extension_args
         
         yield Result[:successful], identity_url, profile_data
       when OpenID::Consumer::CANCEL
@@ -209,6 +213,12 @@ module OpenIdAuthentication
       end
       
       open_id_request.add_extension( ax_request )
+    end
+    
+    def add_oauth_fields(open_id_request, fields)
+      oauth_request = OpenID::OAuth::Request.new
+      oauth_request.parse_extension_args({ 'consumer' => fields[:consumer], 'scope' => fields[:scope] })
+      open_id_request.add_extension(oauth_request)
     end
         
     def open_id_redirect_url(open_id_request, return_to = nil, method = nil)
